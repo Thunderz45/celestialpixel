@@ -49,7 +49,7 @@ export default function Portfolio({ onNavigate }) {
         {/* Back CTA Button */}
         <div className="portfolio-item">
           <button 
-            onClick={() => onNavigate('home')}
+            onClick={() => onNavigate('/')}
             className="btn-primary px-8 py-4 rounded-full font-label-sm text-sm uppercase tracking-widest font-bold magnetic flex items-center justify-center gap-2 cursor-none"
             data-cursor="hover"
           >

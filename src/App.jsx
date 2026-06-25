@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { gsap } from 'gsap';
 import Home from './pages/Home.jsx';
 import Portfolio from './pages/Portfolio.jsx';
+import Contact from './pages/Contact.jsx';
 
 export default function App() {
-  // Navigation State
-  const [currentPage, setCurrentPage] = useState('home');
+  const navigate = useNavigate();
+  const location = useLocation();
 
   // Cursor coordinates
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
@@ -48,7 +50,7 @@ export default function App() {
     // Delayed initial hook to allow full rendering
     const timer = setTimeout(updateHoverListeners, 1000);
     return () => clearTimeout(timer);
-  }, [chatOpen, currentPage]);
+  }, [chatOpen, location.pathname]);
 
   // Setup WebGL fluid noise background shader
   useEffect(() => {
@@ -218,34 +220,39 @@ export default function App() {
     }
   }, [chatMessages, chatLoading]);
 
-  // Dynamic full-screen wipe transition curtain using GSAP
-  const triggerPageTransition = (targetPage) => {
-    if (currentPage === targetPage) return;
+  // Dynamic full-screen fade transition using GSAP
+  const triggerPageTransition = (targetPath) => {
+    if (location.pathname === targetPath) return;
 
-    const curtain = document.getElementById('transition-curtain');
-    if (!curtain) {
-      setCurrentPage(targetPage);
+    const overlay = document.getElementById('transition-overlay');
+    if (!overlay) {
+      navigate(targetPath);
+      window.scrollTo(0, 0);
       return;
     }
 
     gsap.timeline()
-      .set(curtain, { y: '100%', pointerEvents: 'all' })
-      .to(curtain, {
-        y: '0%',
-        duration: 0.6,
-        ease: 'power3.inOut',
+      .to(overlay, {
+        opacity: 1,
+        duration: 0.4,
+        ease: 'power2.inOut',
+        onStart: () => {
+          overlay.style.pointerEvents = 'all';
+        },
         onComplete: () => {
-          setCurrentPage(targetPage);
+          navigate(targetPath);
           window.scrollTo(0, 0);
         }
       })
-      .to(curtain, {
-        y: '-100%',
-        duration: 0.6,
-        ease: 'power3.inOut',
-        delay: 0.15
-      })
-      .set(curtain, { pointerEvents: 'none' });
+      .to(overlay, {
+        opacity: 0,
+        duration: 0.4,
+        ease: 'power2.inOut',
+        delay: 0.1,
+        onComplete: () => {
+          overlay.style.pointerEvents = 'none';
+        }
+      });
   };
 
   // Chatbot Send Message Handler (Groq proxy local api)
@@ -301,14 +308,14 @@ export default function App() {
 
   return (
     <div className="relative font-body bg-background text-on-surface min-h-screen overflow-x-hidden">
-      {/* Page Wipe Curtain Transition */}
+      {/* Page Fade Transition Overlay */}
       <div 
-        id="transition-curtain" 
-        className="fixed inset-0 z-[100] bg-[#0B0D12] border-t border-[#5b5ff0]/30 shadow-[0_-50px_100px_rgba(91,95,240,0.1)] flex flex-col items-center justify-center pointer-events-none translate-y-full"
+        id="transition-overlay" 
+        className="fixed inset-0 z-[100] bg-[#0B0D12] flex flex-col items-center justify-center pointer-events-none opacity-0"
       >
         <div className="flex flex-col items-center gap-4">
           <img alt="CelestialPixel Logo" className="h-16 w-auto animate-pulse" src="logo.png"/>
-          <span className="font-headline text-lg font-bold text-on-surface tracking-widest uppercase">CelestialPixel</span>
+          <span className="font-headline text-lg font-bold text-on-surface tracking-widest uppercase animate-pulse">CelestialPixel</span>
         </div>
       </div>
 
@@ -328,7 +335,7 @@ export default function App() {
       <nav className="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl border-b border-outline-variant/20 shadow-2xl">
         <div className="flex justify-between items-center px-margin-desktop py-2 max-w-container-max mx-auto md:flex hidden">
           <button 
-            onClick={() => triggerPageTransition('home')}
+            onClick={() => triggerPageTransition('/')}
             className="font-headline text-lg font-bold text-on-surface tracking-tighter flex items-center gap-4 magnetic cursor-none" 
             data-cursor="hover"
           >
@@ -338,39 +345,47 @@ export default function App() {
           
           <div className="flex items-center gap-8">
             <button 
-              onClick={() => triggerPageTransition('home')}
+              onClick={() => triggerPageTransition('/')}
               className={`text-on-surface hover:text-primary transition-colors duration-300 font-label-sm uppercase tracking-widest text-xs font-semibold magnetic cursor-none ${
-                currentPage === 'home' ? 'text-primary border-b border-primary/40 pb-0.5' : ''
+                location.pathname === '/' ? 'text-primary border-b border-primary/40 pb-0.5' : ''
               }`}
               data-cursor="hover"
             >
               Home
             </button>
             <button 
-              onClick={() => triggerPageTransition('portfolio')}
+              onClick={() => triggerPageTransition('/portfolio')}
               className={`text-on-surface-variant hover:text-primary transition-colors duration-300 font-label-sm uppercase tracking-widest text-xs font-semibold magnetic cursor-none ${
-                currentPage === 'portfolio' ? 'text-primary border-b border-primary/40 pb-0.5' : ''
+                location.pathname === '/portfolio' ? 'text-primary border-b border-primary/40 pb-0.5' : ''
               }`}
               data-cursor="hover"
             >
               Work
             </button>
-            <a 
-              className="text-on-surface-variant hover:text-primary transition-colors duration-300 font-label-sm uppercase tracking-widest text-xs font-semibold magnetic" 
-              data-cursor="hover" 
-              href="#contact"
+            <button 
+              onClick={() => triggerPageTransition('/contact')}
+              className={`text-on-surface-variant hover:text-primary transition-colors duration-300 font-label-sm uppercase tracking-widest text-xs font-semibold magnetic cursor-none ${
+                location.pathname === '/contact' ? 'text-primary border-b border-primary/40 pb-0.5' : ''
+              }`}
+              data-cursor="hover"
             >
               Contact
-            </a>
+            </button>
           </div>
           
-          <a className="btn-primary px-4 py-2 text-xs rounded-full font-label-sm uppercase tracking-widest magnetic" data-cursor="hover" href="#contact">Start Project</a>
+          <button 
+            onClick={() => triggerPageTransition('/contact')}
+            className="btn-primary px-4 py-2 text-xs rounded-full font-label-sm uppercase tracking-widest magnetic cursor-none" 
+            data-cursor="hover"
+          >
+            Start Project
+          </button>
         </div>
 
         {/* Mobile Nav */}
         <div className="flex justify-between items-center px-margin-mobile py-4 md:hidden bg-surface/80 backdrop-blur-xl">
           <button 
-            onClick={() => triggerPageTransition('home')}
+            onClick={() => triggerPageTransition('/')}
             className="font-headline text-md font-bold text-on-surface tracking-tighter flex items-center gap-2"
           >
             <img alt="CelestialPixel Logo" className="h-6 w-auto" src="logo.png"/>
@@ -378,38 +393,40 @@ export default function App() {
           </button>
           <div className="flex items-center gap-4">
             <button 
-              onClick={() => triggerPageTransition('home')}
+              onClick={() => triggerPageTransition('/')}
               className={`hover:text-primary transition-colors duration-300 font-label-sm uppercase tracking-widest text-xs font-semibold ${
-                currentPage === 'home' ? 'text-primary' : 'text-on-surface-variant'
+                location.pathname === '/' ? 'text-primary' : 'text-on-surface-variant'
               }`}
             >
               Home
             </button>
             <button 
-              onClick={() => triggerPageTransition('portfolio')}
+              onClick={() => triggerPageTransition('/portfolio')}
               className={`hover:text-primary transition-colors duration-300 font-label-sm uppercase tracking-widest text-xs font-semibold ${
-                currentPage === 'portfolio' ? 'text-primary' : 'text-on-surface-variant'
+                location.pathname === '/portfolio' ? 'text-primary' : 'text-on-surface-variant'
               }`}
             >
               Work
             </button>
-            <a 
-              className="text-on-surface-variant hover:text-primary transition-colors duration-300 font-label-sm uppercase tracking-widest text-xs font-semibold" 
-              href="#contact"
+            <button 
+              onClick={() => triggerPageTransition('/contact')}
+              className={`hover:text-primary transition-colors duration-300 font-label-sm uppercase tracking-widest text-xs font-semibold ${
+                location.pathname === '/contact' ? 'text-primary' : 'text-on-surface-variant'
+              }`}
             >
               Contact
-            </a>
+            </button>
           </div>
         </div>
       </nav>
 
       {/* Main Pages router */}
       <main>
-        {currentPage === 'home' ? (
-          <Home onNavigate={triggerPageTransition} />
-        ) : (
-          <Portfolio onNavigate={triggerPageTransition} />
-        )}
+        <Routes>
+          <Route path="/" element={<Home onNavigate={triggerPageTransition} />} />
+          <Route path="/portfolio" element={<Portfolio onNavigate={triggerPageTransition} />} />
+          <Route path="/contact" element={<Contact onNavigate={triggerPageTransition} />} />
+        </Routes>
       </main>
 
       {/* Celesti Chatbot Widget */}
