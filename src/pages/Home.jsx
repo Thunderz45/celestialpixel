@@ -1,10 +1,134 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Home({ onNavigate }) {
+  const canvasRef = useRef(null);
+
+  // Setup WebGL fluid noise background shader
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    let animFrameId;
+    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+    if (!gl) return;
+
+    function syncSize() {
+      const w = canvas.clientWidth || 1280;
+      const h = canvas.clientHeight || 720;
+      if (canvas.width !== w || canvas.height !== h) {
+        canvas.width = w;
+        canvas.height = h;
+      }
+    }
+    syncSize();
+
+    const vs = `
+      attribute vec2 a_position;
+      varying vec2 v_texCoord;
+      void main() {
+        v_texCoord = a_position * 0.5 + 0.5;
+        gl_Position = vec4(a_position, 0.0, 1.0);
+      }
+    `;
+
+    const fs = `
+      precision highp float;
+      varying vec2 v_texCoord;
+      uniform float u_time;
+      uniform vec2 u_resolution;
+
+      vec3 permute(vec3 x) { return mod(((x*34.0)+1.0)*x, 289.0); }
+
+      float snoise(vec2 v){
+        const vec4 C = vec4(0.211324865405187, 0.366025403784439,
+                 -0.577350269189626, 0.024390243902439);
+        vec2 i  = floor(v + dot(v, C.yy) );
+        vec2 x0 = v -   i + dot(i, C.xx);
+        vec2 i1;
+        i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+        vec4 x12 = x0.xyxy + C.xxzz;
+        x12.xy -= i1;
+        i = mod(i, 289.0);
+        vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 ))
+        + i.x + vec3(0.0, i1.x, 1.0 ));
+        vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy),
+          dot(x12.zw,x12.zw)), 0.0);
+        m = m*m ;
+        m = m*m ;
+        vec3 x = 2.0 * fract(p * C.www) - 1.0;
+        vec3 h = abs(x) - 0.5;
+        vec3 ox = floor(x + 0.5);
+        vec3 a0 = x - ox;
+        m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );
+        vec3 g;
+        g.x  = a0.x  * x0.x  + h.x  * x0.y;
+        g.yz = a0.yz * x12.xz + h.yz * x12.yw;
+        return 130.0 * dot(m, g);
+      }
+
+      void main() {
+          vec2 uv = v_texCoord;
+          float t = u_time * 0.2;
+          
+          float n1 = snoise(uv * 2.0 + t);
+          float n2 = snoise(uv * 3.0 - t * 0.5);
+          
+          vec3 color1 = vec3(0.043, 0.051, 0.071); // #0B0D12
+          vec3 color2 = vec3(0.357, 0.373, 0.941); // #5B5FF0
+          vec3 color3 = vec3(0.165, 0.180, 0.216); // #2A2E37
+          
+          vec3 color = mix(color1, color3, n1 * 0.5 + 0.5);
+          color = mix(color, color2, n2 * 0.3 + 0.1);
+          
+          float dist = distance(uv, vec2(0.5));
+          color *= 1.2 - dist;
+          
+          gl_FragColor = vec4(color, 1.0);
+      }
+    `;
+
+    function cs(type, src) {
+      const s = gl.createShader(type);
+      gl.shaderSource(s, src);
+      gl.compileShader(s);
+      return s;
+    }
+
+    const prog = gl.createProgram();
+    gl.attachShader(prog, cs(gl.VERTEX_SHADER, vs));
+    gl.attachShader(prog, cs(gl.FRAGMENT_SHADER, fs));
+    gl.linkProgram(prog);
+    gl.useProgram(prog);
+
+    const buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+    const pos = gl.getAttribLocation(prog, 'a_position');
+    gl.enableVertexAttribArray(pos);
+    gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+
+    const uTime = gl.getUniformLocation(prog, 'u_time');
+    const uRes = gl.getUniformLocation(prog, 'u_resolution');
+
+    function render(t) {
+      syncSize();
+      gl.viewport(0, 0, canvas.width, canvas.height);
+      if (uTime) gl.uniform1f(uTime, t * 0.001);
+      if (uRes) gl.uniform2f(uRes, canvas.width, canvas.height);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      animFrameId = requestAnimationFrame(render);
+    }
+    render(0);
+
+    return () => {
+      cancelAnimationFrame(animFrameId);
+    };
+  }, []);
+
   // Setup text reveal and magnetic scroll animations specifically for homepage components
   useEffect(() => {
     const revealElements = document.querySelectorAll('.reveal-text');
@@ -37,6 +161,12 @@ export default function Home({ onNavigate }) {
     <>
       {/* 1. Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center pt-32 pb-16 overflow-hidden">
+        {/* WebGL Canvas Background inside Hero */}
+        <div className="absolute inset-0 w-full h-full z-0 pointer-events-none opacity-60">
+          <canvas ref={canvasRef} className="w-full h-full block"></canvas>
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0B0D12]/50 to-[#0B0D12] z-0"></div>
+
         <div className="relative z-10 max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop text-center flex flex-col items-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 mb-8 backdrop-blur-sm">
             <span className="w-2 h-2 rounded-full bg-[#5b5ff0] animate-pulse"></span>
