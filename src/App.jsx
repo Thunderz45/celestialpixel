@@ -211,7 +211,7 @@ export default function App() {
         el.removeEventListener('mouseleave', () => onMouseLeave(el));
       });
     };
-  }, [chatOpen, currentPage]);
+  }, [chatOpen, location.pathname]);
 
   // Scroll Chat to Bottom on messages change
   useEffect(() => {
