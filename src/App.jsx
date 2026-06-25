@@ -10,6 +10,26 @@ export default function App() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Mobile Nav State
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Disable body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileMenuOpen]);
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
+
   // Chatbot State
   const [chatOpen, setChatOpen] = useState(false);
   const [chatInput, setChatInput] = useState('');
@@ -22,12 +42,12 @@ export default function App() {
   // Setup GSAP magnetic effects
   useEffect(() => {
     const magneticElements = document.querySelectorAll('.magnetic');
-    
+
     const onMouseMove = (e, el) => {
       const rect = el.getBoundingClientRect();
       const x = e.clientX - rect.left - rect.width / 2;
       const y = e.clientY - rect.top - rect.height / 2;
-      
+
       gsap.to(el, {
         x: x * 0.2,
         y: y * 0.2,
@@ -125,7 +145,7 @@ export default function App() {
       });
 
       const data = await response.json();
-      
+
       if (response.ok && data.success && data.reply) {
         setChatMessages(prev => [...prev, {
           role: 'assistant',
@@ -155,12 +175,12 @@ export default function App() {
     <div className="relative font-body bg-background text-on-surface min-h-screen overflow-x-hidden">
 
       {/* Page Fade Transition Overlay */}
-      <div 
-        id="transition-overlay" 
+      <div
+        id="transition-overlay"
         className="fixed inset-0 z-[100] bg-[#0B0D12] flex flex-col items-center justify-center pointer-events-none opacity-0"
       >
         <div className="flex flex-col items-center gap-4">
-          <img alt="CelestialPixel Logo" className="h-16 w-auto animate-pulse" src="logo.png"/>
+          <img alt="CelestialPixel Logo" className="h-16 w-auto animate-pulse" src="logo.png" />
           <span className="font-headline text-lg font-bold text-on-surface tracking-widest uppercase animate-pulse">CelestialPixel</span>
         </div>
       </div>
@@ -171,57 +191,53 @@ export default function App() {
       {/* Top Navbar */}
       <nav className="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl border-b border-outline-variant/20 shadow-2xl">
         <div className="flex justify-between items-center px-margin-desktop py-2 max-w-container-max mx-auto md:flex hidden">
-          <button 
+          <button
             onClick={() => triggerPageTransition('/')}
-            className="font-headline text-lg font-bold text-on-surface tracking-tighter flex items-center gap-4 magnetic" 
+            className="font-headline text-lg font-bold text-on-surface tracking-tighter flex items-center gap-4 magnetic"
             data-cursor="hover"
           >
-            <img alt="CelestialPixel Logo" className="h-8 w-auto" src="logo.png"/>
+            <img alt="CelestialPixel Logo" className="h-8 w-auto" src="logo.png" />
             CelestialPixel
           </button>
-          
+
           <div className="flex items-center gap-8">
-            <button 
+            <button
               onClick={() => triggerPageTransition('/')}
-              className={`text-on-surface hover:text-primary transition-colors duration-300 font-label-sm uppercase tracking-widest text-xs font-semibold magnetic ${
-                location.pathname === '/' ? 'text-primary border-b border-primary/40 pb-0.5' : ''
-              }`}
+              className={`text-on-surface hover:text-primary transition-colors duration-300 font-label-sm uppercase tracking-widest text-xs font-semibold magnetic ${location.pathname === '/' ? 'text-primary border-b border-primary/40 pb-0.5' : ''
+                }`}
               data-cursor="hover"
             >
               Home
             </button>
-            <button 
+            <button
               onClick={() => triggerPageTransition('/portfolio')}
-              className={`text-on-surface-variant hover:text-primary transition-colors duration-300 font-label-sm uppercase tracking-widest text-xs font-semibold magnetic ${
-                location.pathname === '/portfolio' ? 'text-primary border-b border-primary/40 pb-0.5' : ''
-              }`}
+              className={`text-on-surface-variant hover:text-primary transition-colors duration-300 font-label-sm uppercase tracking-widest text-xs font-semibold magnetic ${location.pathname === '/portfolio' ? 'text-primary border-b border-primary/40 pb-0.5' : ''
+                }`}
               data-cursor="hover"
             >
               Work
             </button>
-            <button 
+            <button
               onClick={() => triggerPageTransition('/about')}
-              className={`text-on-surface-variant hover:text-primary transition-colors duration-300 font-label-sm uppercase tracking-widest text-xs font-semibold magnetic ${
-                location.pathname === '/about' ? 'text-primary border-b border-primary/40 pb-0.5' : ''
-              }`}
+              className={`text-on-surface-variant hover:text-primary transition-colors duration-300 font-label-sm uppercase tracking-widest text-xs font-semibold magnetic ${location.pathname === '/about' ? 'text-primary border-b border-primary/40 pb-0.5' : ''
+                }`}
               data-cursor="hover"
             >
               About
             </button>
-            <button 
+            <button
               onClick={() => triggerPageTransition('/contact')}
-              className={`text-on-surface-variant hover:text-primary transition-colors duration-300 font-label-sm uppercase tracking-widest text-xs font-semibold magnetic ${
-                location.pathname === '/contact' ? 'text-primary border-b border-primary/40 pb-0.5' : ''
-              }`}
+              className={`text-on-surface-variant hover:text-primary transition-colors duration-300 font-label-sm uppercase tracking-widest text-xs font-semibold magnetic ${location.pathname === '/contact' ? 'text-primary border-b border-primary/40 pb-0.5' : ''
+                }`}
               data-cursor="hover"
             >
               Contact
             </button>
           </div>
-          
-          <button 
+
+          <button
             onClick={() => triggerPageTransition('/contact')}
-            className="btn-primary px-4 py-2 text-xs rounded-full font-label-sm uppercase tracking-widest magnetic" 
+            className="btn-primary px-4 py-2 text-xs rounded-full font-label-sm uppercase tracking-widest magnetic"
             data-cursor="hover"
           >
             Start Project
@@ -229,47 +245,111 @@ export default function App() {
         </div>
 
         {/* Mobile Nav */}
-        <div className="flex justify-between items-center px-margin-mobile py-4 md:hidden bg-surface/80 backdrop-blur-xl">
-          <button 
-            onClick={() => triggerPageTransition('/')}
+        <div className={`flex justify-between items-center px-margin-mobile py-4 md:hidden transition-all duration-300 relative z-50 ${
+          mobileMenuOpen ? 'bg-transparent border-b border-transparent' : 'bg-surface/80 backdrop-blur-xl border-b border-outline-variant/10'
+        }`}>
+          <button
+            onClick={() => {
+              setMobileMenuOpen(false);
+              triggerPageTransition('/');
+            }}
             className="font-headline text-md font-bold text-on-surface tracking-tighter flex items-center gap-2"
           >
-            <img alt="CelestialPixel Logo" className="h-6 w-auto" src="logo.png"/>
+            <img alt="CelestialPixel Logo" className="h-6 w-auto" src="logo.png" />
             CelestialPixel
           </button>
-          <div className="flex items-center gap-4">
-            <button 
-              onClick={() => triggerPageTransition('/')}
-              className={`hover:text-primary transition-colors duration-300 font-label-sm uppercase tracking-widest text-xs font-semibold ${
-                location.pathname === '/' ? 'text-primary' : 'text-on-surface-variant'
+          
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10 text-on-surface focus:outline-none transition-all duration-300 hover:bg-white/10 active:scale-90"
+            aria-label={mobileMenuOpen ? "Close Menu" : "Open Menu"}
+          >
+            <span className={`material-symbols-outlined text-2xl transition-transform duration-300 ${mobileMenuOpen ? 'rotate-90 text-primary' : ''}`}>
+              {mobileMenuOpen ? 'close' : 'menu'}
+            </span>
+          </button>
+        </div>
+
+        {/* Mobile Menu Drawer Overlay */}
+        <div
+          className={`fixed inset-0 z-40 bg-background/95 backdrop-blur-2xl transition-all duration-500 ease-in-out md:hidden flex flex-col justify-center items-center ${
+            mobileMenuOpen ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-full pointer-events-none'
+          }`}
+        >
+          {/* Subtle Grid Background */}
+          <div className="absolute inset-0 bg-grid opacity-30 pointer-events-none"></div>
+
+          {/* Glowing Radial Orb decoration */}
+          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-[#5b5ff0]/10 rounded-full blur-[100px] pointer-events-none"></div>
+
+          <div className="flex flex-col items-center gap-8 text-center relative z-10">
+            {/* Logo in drawer */}
+            <div 
+              style={{ transitionDelay: '0ms' }}
+              className={`flex flex-col items-center gap-2 mb-6 transition-all duration-500 transform ${
+                mobileMenuOpen ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 -translate-y-8 scale-95'
               }`}
             >
-              Home
-            </button>
-            <button 
-              onClick={() => triggerPageTransition('/portfolio')}
-              className={`hover:text-primary transition-colors duration-300 font-label-sm uppercase tracking-widest text-xs font-semibold ${
-                location.pathname === '/portfolio' ? 'text-primary' : 'text-on-surface-variant'
+              <img alt="CelestialPixel Logo" className="h-12 w-auto animate-pulse" src="logo.png" />
+              <span className="font-headline text-lg font-bold text-on-surface tracking-widest uppercase">CelestialPixel</span>
+            </div>
+
+            {/* Menu Links with Staggered Delays */}
+            {[
+              { label: 'Home', path: '/' },
+              { label: 'Work', path: '/portfolio' },
+              { label: 'About', path: '/about' },
+              { label: 'Contact', path: '/contact' }
+            ].map((link, idx) => (
+              <button
+                key={link.path}
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  triggerPageTransition(link.path);
+                }}
+                style={{
+                  transitionDelay: `${(idx + 1) * 75}ms`
+                }}
+                className={`text-3xl font-extrabold uppercase tracking-widest font-headline hover:text-primary transition-all duration-500 transform ${
+                  mobileMenuOpen
+                    ? 'opacity-100 translate-y-0 scale-100'
+                    : 'opacity-0 translate-y-8 scale-95 pointer-events-none'
+                } ${location.pathname === link.path ? 'text-primary' : 'text-on-surface-variant'}`}
+              >
+                {link.label}
+              </button>
+            ))}
+
+            {/* Start Project CTA */}
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                triggerPageTransition('/contact');
+              }}
+              style={{
+                transitionDelay: '375ms'
+              }}
+              className={`btn-primary mt-8 px-8 py-3 rounded-full font-label-sm uppercase tracking-widest hover:scale-105 active:scale-95 transition-all duration-500 transform ${
+                mobileMenuOpen
+                  ? 'opacity-100 translate-y-0 scale-100'
+                  : 'opacity-0 translate-y-8 scale-95 pointer-events-none'
               }`}
             >
-              Work
+              Start Project
             </button>
-            <button 
-              onClick={() => triggerPageTransition('/about')}
-              className={`hover:text-primary transition-colors duration-300 font-label-sm uppercase tracking-widest text-xs font-semibold ${
-                location.pathname === '/about' ? 'text-primary' : 'text-on-surface-variant'
+
+            {/* Mobile menu footer */}
+            <div
+              style={{
+                transitionDelay: '450ms'
+              }}
+              className={`mt-16 flex flex-col items-center gap-1 text-[11px] text-on-surface-variant tracking-wider transition-all duration-500 transform ${
+                mobileMenuOpen ? 'opacity-60 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none'
               }`}
             >
-              About
-            </button>
-            <button 
-              onClick={() => triggerPageTransition('/contact')}
-              className={`hover:text-primary transition-colors duration-300 font-label-sm uppercase tracking-widest text-xs font-semibold ${
-                location.pathname === '/contact' ? 'text-primary' : 'text-on-surface-variant'
-              }`}
-            >
-              Contact
-            </button>
+              <span>hello@celestialpixel.com</span>
+              <span>© 2026 CelestialPixel. All rights reserved.</span>
+            </div>
           </div>
         </div>
       </nav>
@@ -287,11 +367,10 @@ export default function App() {
       {/* Celesti Chatbot Widget */}
       <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-4 font-body text-on-surface">
         {/* Chat Window */}
-        <div 
-          id="chat-window" 
-          className={`glass-panel w-[360px] max-w-[calc(100vw-2rem)] h-[480px] rounded-2xl flex flex-col overflow-hidden shadow-2xl transition-all duration-300 ${
-            chatOpen ? 'opacity-100 translate-y-0 scale-100 pointer-events-auto' : 'opacity-0 translate-y-10 scale-95 pointer-events-none'
-          }`}
+        <div
+          id="chat-window"
+          className={`glass-panel w-[360px] max-w-[calc(100vw-2rem)] h-[480px] rounded-2xl flex flex-col overflow-hidden shadow-2xl transition-all duration-300 ${chatOpen ? 'opacity-100 translate-y-0 scale-100 pointer-events-auto' : 'opacity-0 translate-y-10 scale-95 pointer-events-none'
+            }`}
         >
           {/* Header */}
           <div className="px-6 py-4 border-b border-white/10 flex justify-between items-center bg-white/5 backdrop-blur-md">
@@ -305,8 +384,8 @@ export default function App() {
                 <p className="text-[9px] text-on-surface-variant uppercase tracking-widest font-semibold">Virtual Concierge</p>
               </div>
             </div>
-            <button 
-              onClick={() => setChatOpen(false)} 
+            <button
+              onClick={() => setChatOpen(false)}
               className="text-on-surface-variant hover:text-white transition-colors duration-200"
               data-cursor="hover"
             >
@@ -317,20 +396,18 @@ export default function App() {
           {/* Messages */}
           <div className="flex-1 p-6 overflow-y-auto space-y-4 flex flex-col scrollbar-none" style={{ scrollbarWidth: 'none' }}>
             {chatMessages.map((msg, i) => (
-              <div 
-                key={i} 
+              <div
+                key={i}
                 className={`flex flex-col gap-1 max-w-[85%] ${msg.role === 'user' ? 'self-end items-end text-right' : 'self-start text-left'}`}
               >
-                <span className={`text-[9px] font-bold uppercase tracking-wider pl-1 ${
-                  msg.role === 'user' ? 'text-[#c0c1ff]' : 'text-[#5b5ff0]'
-                }`}>
+                <span className={`text-[9px] font-bold uppercase tracking-wider pl-1 ${msg.role === 'user' ? 'text-[#c0c1ff]' : 'text-[#5b5ff0]'
+                  }`}>
                   {msg.sender}
                 </span>
-                <div className={`px-4 py-3 text-sm ${
-                  msg.role === 'user' 
-                    ? 'bg-[#5b5ff0] border border-[#5b5ff0]/50 rounded-2xl rounded-tr-none text-white' 
-                    : 'bg-white/5 border border-white/10 rounded-2xl rounded-tl-none text-on-surface'
-                }`}>
+                <div className={`px-4 py-3 text-sm ${msg.role === 'user'
+                  ? 'bg-[#5b5ff0] border border-[#5b5ff0]/50 rounded-2xl rounded-tr-none text-white'
+                  : 'bg-white/5 border border-white/10 rounded-2xl rounded-tl-none text-on-surface'
+                  }`}>
                   {msg.content}
                 </div>
               </div>
@@ -351,7 +428,7 @@ export default function App() {
 
           {/* Form Input */}
           <form onSubmit={handleChatSubmit} className="p-4 border-t border-white/10 bg-white/5 flex gap-2 items-center">
-            <input 
+            <input
               type="text"
               autoComplete="off"
               placeholder="Commune with Celesti..."
@@ -359,8 +436,8 @@ export default function App() {
               onChange={(e) => setChatInput(e.target.value)}
               className="flex-1 bg-black/40 border border-white/10 rounded-full px-5 py-3 text-sm text-white placeholder-white/30 focus:outline-none focus:border-[#5b5ff0] transition-colors duration-300"
             />
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className="btn-primary w-10 h-10 rounded-full flex items-center justify-center transition-transform hover:scale-105"
               data-cursor="hover"
             >
@@ -370,7 +447,7 @@ export default function App() {
         </div>
 
         {/* Floating Bubble Launcher */}
-        <button 
+        <button
           onClick={() => setChatOpen(prev => !prev)}
           className="btn-primary w-14 h-14 rounded-full flex items-center justify-center shadow-lg relative magnetic"
           data-cursor="hover"
