@@ -165,7 +165,7 @@ export default function Home({ onNavigate }) {
         <div className="absolute inset-0 w-full h-full z-0 pointer-events-none opacity-60">
           <canvas ref={canvasRef} className="w-full h-full block"></canvas>
         </div>
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0B0D12]/50 to-[#0B0D12] z-0"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0B0D12]/50 to-[#0B0D12] z-0 pointer-events-none"></div>
 
         <div className="relative z-10 max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop text-center flex flex-col items-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 mb-8 backdrop-blur-sm">
@@ -243,7 +243,7 @@ export default function Home({ onNavigate }) {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Web Development */}
             <div className="glass-panel rounded-3xl p-10 flex flex-col justify-between md:col-span-2 group relative overflow-hidden min-h-[300px] text-left" data-cursor="hover">
-              <div className="absolute inset-0 bg-gradient-to-br from-[#5b5ff0]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-[#5b5ff0]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0 pointer-events-none"></div>
               <div className="relative z-10">
                 <span className="material-symbols-outlined text-4xl mb-6 text-[#5b5ff0]">code</span>
                 <h3 className="text-2xl font-bold mb-4 font-headline">Website Development</h3>
