@@ -21,19 +21,6 @@ export default function Contact({ onNavigate }) {
       { y: 30, opacity: 0 },
       { y: 0, opacity: 1, duration: 0.8, stagger: 0.15, ease: "power2.out" }
     );
-
-    // Setup custom cursor hover bindings
-    const updateHoverListeners = () => {
-      const hovers = document.querySelectorAll('[data-cursor="hover"]');
-      const cursor = document.getElementById('cursor');
-      if (cursor) {
-        hovers.forEach(el => {
-          el.addEventListener('mouseenter', () => cursor.classList.add('hovering'));
-          el.addEventListener('mouseleave', () => cursor.classList.remove('hovering'));
-        });
-      }
-    };
-    updateHoverListeners();
   }, []);
 
   // Form Submit Handler (Using FormSubmit free AJAX API)
@@ -217,7 +204,7 @@ CelestialPixel`;
               id="contact-submit" 
               type="submit" 
               disabled={formLoading || submitted}
-              className="btn-primary w-full py-3.5 rounded-lg font-label-sm uppercase tracking-widest mt-4 magnetic flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-none"
+              className="btn-primary w-full py-3.5 rounded-lg font-label-sm uppercase tracking-widest mt-4 magnetic flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               data-cursor="hover"
             >
               {formLoading ? (
@@ -241,7 +228,7 @@ CelestialPixel`;
         <div className="contact-item">
           <button 
             onClick={() => onNavigate('/')}
-            className="btn-secondary px-8 py-4 rounded-full font-label-sm text-sm uppercase tracking-widest font-bold magnetic flex items-center justify-center gap-2 cursor-none"
+            className="btn-secondary px-8 py-4 rounded-full font-label-sm text-sm uppercase tracking-widest font-bold magnetic flex items-center justify-center gap-2"
             data-cursor="hover"
           >
             <span className="material-symbols-outlined text-sm">arrow_back</span>

@@ -28,22 +28,8 @@ export default function Home({ onNavigate }) {
       triggers.push(anim.scrollTrigger);
     });
 
-    // Re-trigger cursor updates for magnetic elements loaded dynamically
-    const updateHoverListeners = () => {
-      const hovers = document.querySelectorAll('[data-cursor="hover"]');
-      const cursor = document.getElementById('cursor');
-      if (cursor) {
-        hovers.forEach(el => {
-          el.addEventListener('mouseenter', () => cursor.classList.add('hovering'));
-          el.addEventListener('mouseleave', () => cursor.classList.remove('hovering'));
-        });
-      }
-    };
-    const timer = setTimeout(updateHoverListeners, 500);
-
     return () => {
       triggers.forEach(t => t && t.kill());
-      clearTimeout(timer);
     };
   }, []);
 
@@ -68,7 +54,7 @@ export default function Home({ onNavigate }) {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
             <button 
               onClick={() => onNavigate('/contact')}
-              className="btn-primary w-full sm:w-auto px-8 py-4 rounded-full font-label-sm text-sm uppercase tracking-widest font-bold magnetic flex items-center justify-center gap-2 cursor-none" 
+              className="btn-primary w-full sm:w-auto px-8 py-4 rounded-full font-label-sm text-sm uppercase tracking-widest font-bold magnetic flex items-center justify-center gap-2" 
               data-cursor="hover"
             >
               Book a Consultation
@@ -76,7 +62,7 @@ export default function Home({ onNavigate }) {
             </button>
             <button 
               onClick={() => onNavigate('portfolio')}
-              className="btn-secondary w-full sm:w-auto px-8 py-4 rounded-full font-label-sm text-sm uppercase tracking-widest font-bold magnetic flex items-center justify-center gap-2 cursor-none" 
+              className="btn-secondary w-full sm:w-auto px-8 py-4 rounded-full font-label-sm text-sm uppercase tracking-widest font-bold magnetic flex items-center justify-center gap-2" 
               data-cursor="hover"
             >
               View Portfolio
@@ -194,7 +180,7 @@ export default function Home({ onNavigate }) {
           </p>
           <button 
             onClick={() => onNavigate('/contact')}
-            className="btn-primary px-8 py-4 rounded-full font-label-sm text-sm uppercase tracking-widest font-bold magnetic flex items-center justify-center gap-2 cursor-none reveal-text"
+            className="btn-primary px-8 py-4 rounded-full font-label-sm text-sm uppercase tracking-widest font-bold magnetic flex items-center justify-center gap-2 reveal-text"
             data-cursor="hover"
           >
             Initiate Consultation

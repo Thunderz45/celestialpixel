@@ -8,19 +8,6 @@ export default function Portfolio({ onNavigate }) {
       { y: 30, opacity: 0 },
       { y: 0, opacity: 1, duration: 0.8, stagger: 0.2, ease: "power2.out" }
     );
-
-    // Setup custom cursor bindings
-    const updateHoverListeners = () => {
-      const hovers = document.querySelectorAll('[data-cursor="hover"]');
-      const cursor = document.getElementById('cursor');
-      if (cursor) {
-        hovers.forEach(el => {
-          el.addEventListener('mouseenter', () => cursor.classList.add('hovering'));
-          el.addEventListener('mouseleave', () => cursor.classList.remove('hovering'));
-        });
-      }
-    };
-    updateHoverListeners();
   }, []);
 
   return (
@@ -50,7 +37,7 @@ export default function Portfolio({ onNavigate }) {
         <div className="portfolio-item">
           <button 
             onClick={() => onNavigate('/')}
-            className="btn-primary px-8 py-4 rounded-full font-label-sm text-sm uppercase tracking-widest font-bold magnetic flex items-center justify-center gap-2 cursor-none"
+            className="btn-primary px-8 py-4 rounded-full font-label-sm text-sm uppercase tracking-widest font-bold magnetic flex items-center justify-center gap-2"
             data-cursor="hover"
           >
             <span className="material-symbols-outlined text-sm">arrow_back</span>

@@ -9,11 +9,6 @@ export default function App() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Cursor coordinates
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [isHovering, setIsHovering] = useState(false);
-  const cursorRef = useRef(null);
-
   // Chatbot State
   const [chatOpen, setChatOpen] = useState(false);
   const [chatInput, setChatInput] = useState('');
@@ -25,32 +20,6 @@ export default function App() {
 
   // References
   const canvasRef = useRef(null);
-
-  // Setup Custom Cursor coordinates
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      setMousePos({ x: e.clientX, y: e.clientY });
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-    };
-  }, []);
-
-  // Update cursor hover states for custom element selections
-  useEffect(() => {
-    const updateHoverListeners = () => {
-      const hovers = document.querySelectorAll('[data-cursor="hover"]');
-      hovers.forEach(el => {
-        el.addEventListener('mouseenter', () => setIsHovering(true));
-        el.addEventListener('mouseleave', () => setIsHovering(false));
-      });
-    };
-    // Delayed initial hook to allow full rendering
-    const timer = setTimeout(updateHoverListeners, 1000);
-    return () => clearTimeout(timer);
-  }, [chatOpen, location.pathname]);
 
   // Setup WebGL fluid noise background shader
   useEffect(() => {
@@ -308,6 +277,9 @@ export default function App() {
 
   return (
     <div className="relative font-body bg-background text-on-surface min-h-screen overflow-x-hidden">
+      {/* Background WebGL Shader Canvas */}
+      <canvas ref={canvasRef} className="fixed inset-0 w-full h-full z-[-2] pointer-events-none"></canvas>
+
       {/* Page Fade Transition Overlay */}
       <div 
         id="transition-overlay" 
@@ -319,15 +291,6 @@ export default function App() {
         </div>
       </div>
 
-      {/* Custom Cursor */}
-      <div 
-        ref={cursorRef}
-        className={`custom-cursor ${isHovering ? 'hovering' : ''} md:block hidden`}
-        style={{ left: `${mousePos.x}px`, top: `${mousePos.y}px` }}
-      >
-        <span className="cursor-text">View</span>
-      </div>
-
       {/* Grid background overlay */}
       <div className="fixed inset-0 z-[-1] bg-grid opacity-50 pointer-events-none"></div>
 
@@ -336,7 +299,7 @@ export default function App() {
         <div className="flex justify-between items-center px-margin-desktop py-2 max-w-container-max mx-auto md:flex hidden">
           <button 
             onClick={() => triggerPageTransition('/')}
-            className="font-headline text-lg font-bold text-on-surface tracking-tighter flex items-center gap-4 magnetic cursor-none" 
+            className="font-headline text-lg font-bold text-on-surface tracking-tighter flex items-center gap-4 magnetic" 
             data-cursor="hover"
           >
             <img alt="CelestialPixel Logo" className="h-8 w-auto" src="logo.png"/>
@@ -346,7 +309,7 @@ export default function App() {
           <div className="flex items-center gap-8">
             <button 
               onClick={() => triggerPageTransition('/')}
-              className={`text-on-surface hover:text-primary transition-colors duration-300 font-label-sm uppercase tracking-widest text-xs font-semibold magnetic cursor-none ${
+              className={`text-on-surface hover:text-primary transition-colors duration-300 font-label-sm uppercase tracking-widest text-xs font-semibold magnetic ${
                 location.pathname === '/' ? 'text-primary border-b border-primary/40 pb-0.5' : ''
               }`}
               data-cursor="hover"
@@ -355,7 +318,7 @@ export default function App() {
             </button>
             <button 
               onClick={() => triggerPageTransition('/portfolio')}
-              className={`text-on-surface-variant hover:text-primary transition-colors duration-300 font-label-sm uppercase tracking-widest text-xs font-semibold magnetic cursor-none ${
+              className={`text-on-surface-variant hover:text-primary transition-colors duration-300 font-label-sm uppercase tracking-widest text-xs font-semibold magnetic ${
                 location.pathname === '/portfolio' ? 'text-primary border-b border-primary/40 pb-0.5' : ''
               }`}
               data-cursor="hover"
@@ -364,7 +327,7 @@ export default function App() {
             </button>
             <button 
               onClick={() => triggerPageTransition('/contact')}
-              className={`text-on-surface-variant hover:text-primary transition-colors duration-300 font-label-sm uppercase tracking-widest text-xs font-semibold magnetic cursor-none ${
+              className={`text-on-surface-variant hover:text-primary transition-colors duration-300 font-label-sm uppercase tracking-widest text-xs font-semibold magnetic ${
                 location.pathname === '/contact' ? 'text-primary border-b border-primary/40 pb-0.5' : ''
               }`}
               data-cursor="hover"
@@ -375,7 +338,7 @@ export default function App() {
           
           <button 
             onClick={() => triggerPageTransition('/contact')}
-            className="btn-primary px-4 py-2 text-xs rounded-full font-label-sm uppercase tracking-widest magnetic cursor-none" 
+            className="btn-primary px-4 py-2 text-xs rounded-full font-label-sm uppercase tracking-widest magnetic" 
             data-cursor="hover"
           >
             Start Project
@@ -517,7 +480,7 @@ export default function App() {
         {/* Floating Bubble Launcher */}
         <button 
           onClick={() => setChatOpen(prev => !prev)}
-          className="btn-primary w-14 h-14 rounded-full flex items-center justify-center shadow-lg relative cursor-none magnetic"
+          className="btn-primary w-14 h-14 rounded-full flex items-center justify-center shadow-lg relative magnetic"
           data-cursor="hover"
         >
           <span className={`material-symbols-outlined text-2xl transition-all duration-300 absolute ${chatOpen ? 'opacity-0 scale-75' : 'opacity-100 scale-100'}`}>chat_bubble</span>
