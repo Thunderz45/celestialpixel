@@ -213,9 +213,9 @@ export default function App() {
       <div className="fixed inset-0 z-[-1] bg-grid opacity-50 pointer-events-none"></div>
 
       {/* Top Navbar */}
-      <nav className="fixed top-0 w-full z-50 pointer-events-none">
+      <nav className="fixed top-0 left-0 right-0 z-50">
         {/* Desktop Nav */}
-        <div className="bg-surface/80 backdrop-blur-xl border-b border-outline-variant/20 shadow-2xl md:flex hidden w-full pointer-events-auto">
+        <div className="bg-surface/80 backdrop-blur-xl border-b border-outline-variant/20 shadow-2xl md:flex hidden w-full">
           <div className="flex justify-between items-center px-margin-desktop py-2 max-w-container-max mx-auto w-full">
             <button
               onClick={() => triggerPageTransition('/')}
@@ -271,19 +271,11 @@ export default function App() {
           </div>
         </div>
 
-        {/* Mobile Nav */}
-        <div className={`flex justify-between items-center px-margin-mobile py-4 md:hidden transition-all duration-300 border-b relative z-50 pointer-events-auto ${
-          mobileMenuOpen 
-            ? 'bg-[#12131b]/98 border-outline-variant/20 shadow-2xl' 
-            : 'bg-surface/80 backdrop-blur-xl border-outline-variant/10 shadow-lg'
-        }`}>
+        {/* Mobile Nav Header */}
+        <div className="flex justify-between items-center px-margin-mobile py-4 md:hidden bg-surface/80 backdrop-blur-xl border-b border-outline-variant/10 shadow-lg">
           <button
-            onClick={() => {
-              triggerPageTransition('/');
-            }}
-            className={`font-headline text-md font-bold text-on-surface tracking-tighter flex items-center gap-2 transition-all duration-300 ${
-              mobileMenuOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'
-            }`}
+            onClick={() => triggerPageTransition('/')}
+            className="font-headline text-md font-bold text-on-surface tracking-tighter flex items-center gap-2"
           >
             <img alt="CelestialPixel Logo" className="h-6 w-auto" src="logo.png" />
             CelestialPixel
@@ -299,12 +291,13 @@ export default function App() {
             </span>
           </button>
         </div>
+      </nav>
 
-        {/* Mobile Menu Drawer Overlay (Nested inside nav wrapper to resolve WebKit touch hit-testing bugs) */}
+      {/* Mobile Menu Drawer - Conditionally rendered to prevent touch blocking */}
+      {mobileMenuOpen && (
         <div
-          className={`fixed inset-0 z-40 bg-background/95 backdrop-blur-2xl transition-all duration-500 ease-in-out md:hidden flex flex-col justify-center items-center ${
-            mobileMenuOpen ? 'opacity-100 translate-x-0 visible pointer-events-auto' : 'opacity-0 translate-x-full pointer-events-none invisible'
-          }`}
+          className="fixed inset-0 z-[45] md:hidden flex flex-col justify-center items-center"
+          style={{ backgroundColor: 'rgba(18, 19, 27, 0.98)' }}
         >
           {/* Subtle Grid Background */}
           <div className="absolute inset-0 bg-grid opacity-30 pointer-events-none"></div>
@@ -313,26 +306,19 @@ export default function App() {
           <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-[#5b5ff0]/10 rounded-full blur-[100px] pointer-events-none"></div>
 
           <div className="flex flex-col items-center gap-8 text-center relative z-10">
-            {/* Menu Links with Staggered Delays */}
+            {/* Menu Links */}
             {[
               { label: 'Home', path: '/' },
               { label: 'Work', path: '/portfolio' },
               { label: 'About', path: '/about' },
               { label: 'Contact', path: '/contact' }
-            ].map((link, idx) => (
+            ].map((link) => (
               <button
                 key={link.path}
-                onClick={() => {
-                  triggerPageTransition(link.path);
-                }}
-                style={{
-                  transitionDelay: `${(idx + 1) * 75}ms`
-                }}
-                className={`text-3xl font-extrabold uppercase tracking-widest font-headline hover:text-primary transition-all duration-500 transform ${
-                  mobileMenuOpen
-                    ? 'opacity-100 translate-y-0 scale-100'
-                    : 'opacity-0 translate-y-8 scale-95 pointer-events-none'
-                } ${location.pathname === link.path ? 'text-primary' : 'text-on-surface-variant'}`}
+                onClick={() => triggerPageTransition(link.path)}
+                className={`text-3xl font-extrabold uppercase tracking-widest font-headline hover:text-primary transition-colors duration-300 ${
+                  location.pathname === link.path ? 'text-primary' : 'text-on-surface-variant'
+                }`}
               >
                 {link.label}
               </button>
@@ -340,36 +326,20 @@ export default function App() {
 
             {/* Start Project CTA */}
             <button
-              onClick={() => {
-                triggerPageTransition('/contact');
-              }}
-              style={{
-                transitionDelay: '375ms'
-              }}
-              className={`btn-primary mt-8 px-8 py-3 rounded-full font-label-sm uppercase tracking-widest hover:scale-105 active:scale-95 transition-all duration-500 transform ${
-                mobileMenuOpen
-                  ? 'opacity-100 translate-y-0 scale-100'
-                  : 'opacity-0 translate-y-8 scale-95 pointer-events-none'
-              }`}
+              onClick={() => triggerPageTransition('/contact')}
+              className="btn-primary mt-8 px-8 py-3 rounded-full font-label-sm uppercase tracking-widest hover:scale-105 active:scale-95 transition-transform duration-300"
             >
               Start Project
             </button>
 
             {/* Mobile menu footer */}
-            <div
-              style={{
-                transitionDelay: '450ms'
-              }}
-              className={`mt-16 flex flex-col items-center gap-1 text-[11px] text-on-surface-variant tracking-wider transition-all duration-500 transform ${
-                mobileMenuOpen ? 'opacity-60 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none'
-              }`}
-            >
+            <div className="mt-16 flex flex-col items-center gap-1 text-[11px] text-on-surface-variant tracking-wider opacity-60">
               <span>hello@celestialpixel.com</span>
               <span>© 2026 CelestialPixel. All rights reserved.</span>
             </div>
           </div>
         </div>
-      </nav>
+      )}
 
       {/* Main Pages router */}
       <main>
