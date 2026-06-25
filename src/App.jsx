@@ -102,7 +102,14 @@ export default function App() {
 
   // Dynamic full-screen fade transition using GSAP
   const triggerPageTransition = (targetPath) => {
-    if (location.pathname === targetPath) return;
+    if (location.pathname === targetPath) {
+      setMobileMenuOpen(false);
+      return;
+    }
+
+    setTimeout(() => {
+      setMobileMenuOpen(false);
+    }, 50);
 
     const overlay = document.getElementById('transition-overlay');
     if (!overlay) {
@@ -206,9 +213,9 @@ export default function App() {
       <div className="fixed inset-0 z-[-1] bg-grid opacity-50 pointer-events-none"></div>
 
       {/* Top Navbar */}
-      <nav className="fixed top-0 w-full z-50">
+      <nav className="fixed top-0 w-full z-50 pointer-events-none">
         {/* Desktop Nav */}
-        <div className="bg-surface/80 backdrop-blur-xl border-b border-outline-variant/20 shadow-2xl md:flex hidden w-full">
+        <div className="bg-surface/80 backdrop-blur-xl border-b border-outline-variant/20 shadow-2xl md:flex hidden w-full pointer-events-auto">
           <div className="flex justify-between items-center px-margin-desktop py-2 max-w-container-max mx-auto w-full">
             <button
               onClick={() => triggerPageTransition('/')}
@@ -265,14 +272,13 @@ export default function App() {
         </div>
 
         {/* Mobile Nav */}
-        <div className={`flex justify-between items-center px-margin-mobile py-4 md:hidden transition-all duration-300 border-b relative z-50 ${
+        <div className={`flex justify-between items-center px-margin-mobile py-4 md:hidden transition-all duration-300 border-b relative z-50 pointer-events-auto ${
           mobileMenuOpen 
             ? 'bg-[#12131b]/98 border-outline-variant/20 shadow-2xl' 
             : 'bg-surface/80 backdrop-blur-xl border-outline-variant/10 shadow-lg'
         }`}>
           <button
             onClick={() => {
-              setMobileMenuOpen(false);
               triggerPageTransition('/');
             }}
             className={`font-headline text-md font-bold text-on-surface tracking-tighter flex items-center gap-2 transition-all duration-300 ${
@@ -317,7 +323,6 @@ export default function App() {
               <button
                 key={link.path}
                 onClick={() => {
-                  setMobileMenuOpen(false);
                   triggerPageTransition(link.path);
                 }}
                 style={{
@@ -336,7 +341,6 @@ export default function App() {
             {/* Start Project CTA */}
             <button
               onClick={() => {
-                setMobileMenuOpen(false);
                 triggerPageTransition('/contact');
               }}
               style={{
