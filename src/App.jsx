@@ -118,6 +118,7 @@ export default function App() {
         ease: 'power2.inOut',
         onStart: () => {
           overlay.style.pointerEvents = 'all';
+          overlay.style.visibility = 'visible';
         },
         onComplete: () => {
           navigate(targetPath);
@@ -131,6 +132,7 @@ export default function App() {
         delay: 0.1,
         onComplete: () => {
           overlay.style.pointerEvents = 'none';
+          overlay.style.visibility = 'hidden';
         }
       });
   };
@@ -192,7 +194,7 @@ export default function App() {
       {/* Page Fade Transition Overlay */}
       <div
         id="transition-overlay"
-        className="fixed inset-0 z-[100] bg-[#0B0D12] flex flex-col items-center justify-center pointer-events-none opacity-0"
+        className="fixed inset-0 z-[100] bg-[#0B0D12] flex flex-col items-center justify-center pointer-events-none opacity-0 invisible"
       >
         <div className="flex flex-col items-center gap-4">
           <img alt="CelestialPixel Logo" className="h-16 w-auto animate-pulse" src="logo.png" />
@@ -273,11 +275,12 @@ export default function App() {
               setMobileMenuOpen(false);
               triggerPageTransition('/');
             }}
-            className="font-headline flex items-center"
+            className={`font-headline text-md font-bold text-on-surface tracking-tighter flex items-center gap-2 transition-all duration-300 ${
+              mobileMenuOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'
+            }`}
           >
-            <span className="font-headline text-xs font-bold text-on-surface tracking-widest uppercase bg-white/10 px-3 py-1.5 rounded-full border border-white/10">
-              {getPageTitle()}
-            </span>
+            <img alt="CelestialPixel Logo" className="h-6 w-auto" src="logo.png" />
+            CelestialPixel
           </button>
           
           <button
@@ -290,90 +293,79 @@ export default function App() {
             </span>
           </button>
         </div>
-      </nav>
 
-      {/* Mobile Menu Drawer Overlay */}
-      <div
-        className={`fixed inset-0 z-40 bg-background/95 backdrop-blur-2xl transition-all duration-500 ease-in-out md:hidden flex flex-col justify-center items-center ${
-          mobileMenuOpen ? 'opacity-100 translate-x-0 visible' : 'opacity-0 translate-x-full pointer-events-none invisible'
-        }`}
-      >
-        {/* Subtle Grid Background */}
-        <div className="absolute inset-0 bg-grid opacity-30 pointer-events-none"></div>
+        {/* Mobile Menu Drawer Overlay (Nested inside nav wrapper to resolve WebKit touch hit-testing bugs) */}
+        <div
+          className={`fixed inset-0 z-40 bg-background/95 backdrop-blur-2xl transition-all duration-500 ease-in-out md:hidden flex flex-col justify-center items-center ${
+            mobileMenuOpen ? 'opacity-100 translate-x-0 visible pointer-events-auto' : 'opacity-0 translate-x-full pointer-events-none invisible'
+          }`}
+        >
+          {/* Subtle Grid Background */}
+          <div className="absolute inset-0 bg-grid opacity-30 pointer-events-none"></div>
 
-        {/* Glowing Radial Orb decoration */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-[#5b5ff0]/10 rounded-full blur-[100px] pointer-events-none"></div>
+          {/* Glowing Radial Orb decoration */}
+          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-[#5b5ff0]/10 rounded-full blur-[100px] pointer-events-none"></div>
 
-        <div className="flex flex-col items-center gap-8 text-center relative z-10">
-          {/* Logo in drawer */}
-          <div 
-            style={{ transitionDelay: '0ms' }}
-            className={`flex flex-col items-center gap-2 mb-6 transition-all duration-500 transform ${
-              mobileMenuOpen ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 -translate-y-8 scale-95'
-            }`}
-          >
-            <img alt="CelestialPixel Logo" className="h-12 w-auto animate-pulse" src="logo.png" />
-            <span className="font-headline text-lg font-bold text-on-surface tracking-widest uppercase">CelestialPixel</span>
-          </div>
+          <div className="flex flex-col items-center gap-8 text-center relative z-10">
+            {/* Menu Links with Staggered Delays */}
+            {[
+              { label: 'Home', path: '/' },
+              { label: 'Work', path: '/portfolio' },
+              { label: 'About', path: '/about' },
+              { label: 'Contact', path: '/contact' }
+            ].map((link, idx) => (
+              <button
+                key={link.path}
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  triggerPageTransition(link.path);
+                }}
+                style={{
+                  transitionDelay: `${(idx + 1) * 75}ms`
+                }}
+                className={`text-3xl font-extrabold uppercase tracking-widest font-headline hover:text-primary transition-all duration-500 transform ${
+                  mobileMenuOpen
+                    ? 'opacity-100 translate-y-0 scale-100'
+                    : 'opacity-0 translate-y-8 scale-95 pointer-events-none'
+                } ${location.pathname === link.path ? 'text-primary' : 'text-on-surface-variant'}`}
+              >
+                {link.label}
+              </button>
+            ))}
 
-          {/* Menu Links with Staggered Delays */}
-          {[
-            { label: 'Home', path: '/' },
-            { label: 'Work', path: '/portfolio' },
-            { label: 'About', path: '/about' },
-            { label: 'Contact', path: '/contact' }
-          ].map((link, idx) => (
+            {/* Start Project CTA */}
             <button
-              key={link.path}
               onClick={() => {
                 setMobileMenuOpen(false);
-                triggerPageTransition(link.path);
+                triggerPageTransition('/contact');
               }}
               style={{
-                transitionDelay: `${(idx + 1) * 75}ms`
+                transitionDelay: '375ms'
               }}
-              className={`text-3xl font-extrabold uppercase tracking-widest font-headline hover:text-primary transition-all duration-500 transform ${
+              className={`btn-primary mt-8 px-8 py-3 rounded-full font-label-sm uppercase tracking-widest hover:scale-105 active:scale-95 transition-all duration-500 transform ${
                 mobileMenuOpen
                   ? 'opacity-100 translate-y-0 scale-100'
                   : 'opacity-0 translate-y-8 scale-95 pointer-events-none'
-              } ${location.pathname === link.path ? 'text-primary' : 'text-on-surface-variant'}`}
+              }`}
             >
-              {link.label}
+              Start Project
             </button>
-          ))}
 
-          {/* Start Project CTA */}
-          <button
-            onClick={() => {
-              setMobileMenuOpen(false);
-              triggerPageTransition('/contact');
-            }}
-            style={{
-              transitionDelay: '375ms'
-            }}
-            className={`btn-primary mt-8 px-8 py-3 rounded-full font-label-sm uppercase tracking-widest hover:scale-105 active:scale-95 transition-all duration-500 transform ${
-              mobileMenuOpen
-                ? 'opacity-100 translate-y-0 scale-100'
-                : 'opacity-0 translate-y-8 scale-95 pointer-events-none'
-            }`}
-          >
-            Start Project
-          </button>
-
-          {/* Mobile menu footer */}
-          <div
-            style={{
-              transitionDelay: '450ms'
-            }}
-            className={`mt-16 flex flex-col items-center gap-1 text-[11px] text-on-surface-variant tracking-wider transition-all duration-500 transform ${
-              mobileMenuOpen ? 'opacity-60 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none'
-            }`}
-          >
-            <span>hello@celestialpixel.com</span>
-            <span>© 2026 CelestialPixel. All rights reserved.</span>
+            {/* Mobile menu footer */}
+            <div
+              style={{
+                transitionDelay: '450ms'
+              }}
+              className={`mt-16 flex flex-col items-center gap-1 text-[11px] text-on-surface-variant tracking-wider transition-all duration-500 transform ${
+                mobileMenuOpen ? 'opacity-60 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none'
+              }`}
+            >
+              <span>hello@celestialpixel.com</span>
+              <span>© 2026 CelestialPixel. All rights reserved.</span>
+            </div>
           </div>
         </div>
-      </div>
+      </nav>
 
       {/* Main Pages router */}
       <main>
