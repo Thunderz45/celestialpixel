@@ -10,6 +10,21 @@ export default function App() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const getPageTitle = () => {
+    switch (location.pathname) {
+      case '/':
+        return 'Home';
+      case '/portfolio':
+        return 'Work';
+      case '/about':
+        return 'About';
+      case '/contact':
+        return 'Contact';
+      default:
+        return 'CelestialPixel';
+    }
+  };
+
   // Mobile Nav State
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -258,10 +273,11 @@ export default function App() {
               setMobileMenuOpen(false);
               triggerPageTransition('/');
             }}
-            className="font-headline text-md font-bold text-on-surface tracking-tighter flex items-center gap-2"
+            className="font-headline flex items-center"
           >
-            <img alt="CelestialPixel Logo" className="h-6 w-auto" src="logo.png" />
-            CelestialPixel
+            <span className="font-headline text-xs font-bold text-on-surface tracking-widest uppercase bg-white/10 px-3 py-1.5 rounded-full border border-white/10">
+              {getPageTitle()}
+            </span>
           </button>
           
           <button
@@ -279,7 +295,7 @@ export default function App() {
       {/* Mobile Menu Drawer Overlay */}
       <div
         className={`fixed inset-0 z-40 bg-background/95 backdrop-blur-2xl transition-all duration-500 ease-in-out md:hidden flex flex-col justify-center items-center ${
-          mobileMenuOpen ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-full pointer-events-none'
+          mobileMenuOpen ? 'opacity-100 translate-x-0 visible' : 'opacity-0 translate-x-full pointer-events-none invisible'
         }`}
       >
         {/* Subtle Grid Background */}
