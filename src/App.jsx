@@ -4,6 +4,7 @@ import { gsap } from 'gsap';
 import Home from './pages/Home.jsx';
 import Portfolio from './pages/Portfolio.jsx';
 import Contact from './pages/Contact.jsx';
+import About from './pages/About.jsx';
 
 export default function App() {
   const navigate = useNavigate();
@@ -326,6 +327,15 @@ export default function App() {
               Work
             </button>
             <button 
+              onClick={() => triggerPageTransition('/about')}
+              className={`text-on-surface-variant hover:text-primary transition-colors duration-300 font-label-sm uppercase tracking-widest text-xs font-semibold magnetic ${
+                location.pathname === '/about' ? 'text-primary border-b border-primary/40 pb-0.5' : ''
+              }`}
+              data-cursor="hover"
+            >
+              About
+            </button>
+            <button 
               onClick={() => triggerPageTransition('/contact')}
               className={`text-on-surface-variant hover:text-primary transition-colors duration-300 font-label-sm uppercase tracking-widest text-xs font-semibold magnetic ${
                 location.pathname === '/contact' ? 'text-primary border-b border-primary/40 pb-0.5' : ''
@@ -372,6 +382,14 @@ export default function App() {
               Work
             </button>
             <button 
+              onClick={() => triggerPageTransition('/about')}
+              className={`hover:text-primary transition-colors duration-300 font-label-sm uppercase tracking-widest text-xs font-semibold ${
+                location.pathname === '/about' ? 'text-primary' : 'text-on-surface-variant'
+              }`}
+            >
+              About
+            </button>
+            <button 
               onClick={() => triggerPageTransition('/contact')}
               className={`hover:text-primary transition-colors duration-300 font-label-sm uppercase tracking-widest text-xs font-semibold ${
                 location.pathname === '/contact' ? 'text-primary' : 'text-on-surface-variant'
@@ -388,6 +406,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home onNavigate={triggerPageTransition} />} />
           <Route path="/portfolio" element={<Portfolio onNavigate={triggerPageTransition} />} />
+          <Route path="/about" element={<About onNavigate={triggerPageTransition} />} />
           <Route path="/contact" element={<Contact onNavigate={triggerPageTransition} />} />
         </Routes>
       </main>
