@@ -352,7 +352,7 @@ export default function App() {
       </main>
 
       {/* Celesti Chatbot Widget */}
-      <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-4 font-body text-on-surface">
+      <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-4 font-body text-on-surface pointer-events-none">
         {/* Chat Window */}
         <div
           id="chat-window"
@@ -436,7 +436,7 @@ export default function App() {
         {/* Floating Bubble Launcher */}
         <button
           onClick={() => setChatOpen(prev => !prev)}
-          className="btn-primary w-14 h-14 rounded-full flex items-center justify-center shadow-lg relative magnetic"
+          className="btn-primary w-14 h-14 rounded-full flex items-center justify-center shadow-lg relative magnetic pointer-events-auto"
           data-cursor="hover"
         >
           <span className={`material-symbols-outlined text-2xl transition-all duration-300 absolute ${chatOpen ? 'opacity-0 scale-75' : 'opacity-100 scale-100'}`}>chat_bubble</span>

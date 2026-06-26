@@ -106,7 +106,7 @@ export default function Home({ onNavigate }) {
 
     const buf = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
     const pos = gl.getAttribLocation(prog, 'a_position');
     gl.enableVertexAttribArray(pos);
     gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
@@ -135,7 +135,7 @@ export default function Home({ onNavigate }) {
     const triggers = [];
 
     revealElements.forEach((el) => {
-      const anim = gsap.fromTo(el, 
+      const anim = gsap.fromTo(el,
         { y: 50, opacity: 0 },
         {
           y: 0,
@@ -172,27 +172,27 @@ export default function Home({ onNavigate }) {
             <span className="w-2 h-2 rounded-full bg-[#5b5ff0] animate-pulse"></span>
             <span className="font-label-sm text-xs uppercase tracking-widest text-on-surface-variant font-semibold">Digital Alchemy</span>
           </div>
-          
+
           <h1 className="text-4xl md:text-7xl font-extrabold mb-6 leading-tight max-w-4xl mx-auto tracking-tight font-headline">
-            Building Digital <br/><span className="text-gradient-indigo">Experiences</span><br/> That Drive Growth.
+            Building Digital <br /><span className="text-gradient-indigo">Experiences</span><br /> That Drive Growth.
           </h1>
-          
+
           <p className="text-md md:text-lg text-on-surface-variant mb-10 max-w-2xl mx-auto leading-relaxed">
             Web Development, SEO, Social Media Management, Product Photography &amp; Meta Advertising.
           </p>
-          
+
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
-            <button 
+            <button
               onClick={() => onNavigate('/contact')}
-              className="btn-primary w-full sm:w-auto px-8 py-4 rounded-full font-label-sm text-sm uppercase tracking-widest font-bold magnetic flex items-center justify-center gap-2" 
+              className="btn-primary w-full sm:w-auto px-8 py-4 rounded-full font-label-sm text-sm uppercase tracking-widest font-bold magnetic flex items-center justify-center gap-2"
               data-cursor="hover"
             >
               Book a Consultation
               <span className="material-symbols-outlined text-sm">arrow_forward</span>
             </button>
-            <button 
+            <button
               onClick={() => onNavigate('portfolio')}
-              className="btn-secondary w-full sm:w-auto px-8 py-4 rounded-full font-label-sm text-sm uppercase tracking-widest font-bold magnetic flex items-center justify-center gap-2" 
+              className="btn-secondary w-full sm:w-auto px-8 py-4 rounded-full font-label-sm text-sm uppercase tracking-widest font-bold magnetic flex items-center justify-center gap-2"
               data-cursor="hover"
             >
               View Portfolio
@@ -213,7 +213,7 @@ export default function Home({ onNavigate }) {
                 Our command center operates at the bleeding edge of digital innovation, crafting bespoke solutions for elite tech startups and enterprise clients who demand uncompromising quality.
               </p>
             </div>
-            
+
             <div className="w-full lg:w-1/2 grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="glass-panel p-8 rounded-2xl flex flex-col gap-4 reveal-text delay-200 magnetic text-left" data-cursor="hover">
                 <span className="text-5xl md:text-6xl font-extrabold text-[#5b5ff0]">25+</span>
@@ -239,7 +239,7 @@ export default function Home({ onNavigate }) {
             <span className="font-label-sm text-xs uppercase tracking-widest text-[#5b5ff0] mb-4">Capabilities</span>
             <h2 className="text-3xl md:text-5xl font-bold reveal-text font-headline">Our Arsenal</h2>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Web Development */}
             <div className="glass-panel rounded-3xl p-10 flex flex-col justify-between md:col-span-2 group relative overflow-hidden min-h-[300px] text-left" data-cursor="hover">
@@ -303,7 +303,7 @@ export default function Home({ onNavigate }) {
           <p className="text-on-surface-variant text-sm md:text-base max-w-lg mb-10 leading-relaxed reveal-text">
             Have a project concept or need expert telemetry optimization? Connect with our digital orchestrators and launch your vision today.
           </p>
-          <button 
+          <button
             onClick={() => onNavigate('/contact')}
             className="btn-primary px-8 py-4 rounded-full font-label-sm text-sm uppercase tracking-widest font-bold magnetic flex items-center justify-center gap-2 reveal-text"
             data-cursor="hover"
