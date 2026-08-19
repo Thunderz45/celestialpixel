@@ -348,6 +348,7 @@ export default function App() {
           <Route path="/portfolio" element={<Portfolio onNavigate={triggerPageTransition} />} />
           <Route path="/about" element={<About onNavigate={triggerPageTransition} />} />
           <Route path="/contact" element={<Contact onNavigate={triggerPageTransition} />} />
+          <Route path="*" element={<Home onNavigate={triggerPageTransition} />} />
         </Routes>
       </main>
 
